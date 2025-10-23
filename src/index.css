@@ -6,14 +6,5 @@ body,
 	width: 100%;
 	height: 100%;
 	margin: 0;
-	overflow: hidden;
-}
-
-
-#fadeInDiv {
-	opacity: 10%;
-}
-
-#fadeInDiv:hover {
-	opacity: 100%
+	scroll-behavior: smooth;
 }

@@ -1,8 +1,7 @@
 import { Canvas, useLoader } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
-import Points from './components/stars';
 import * as THREE from "three";
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useState, useRef } from "react";
 import { TextureLoader } from 'three';
 import { useSpring, a, animated, easings } from '@react-spring/three';
 
@@ -12,40 +11,34 @@ const descriptions = ['A simple racing game written in Java using JavaFX']
 const BEND = 1.9;
 
 
-function Foreground({ onClick }: { onClick: () => void }) {
+function About() {
 	return (
-		<div id='fadeInDiv' className='absolute z-10 flex h-full w-full text-white transition-discrete duration-5500 items-center justify-center'>
-			<div className=' grid grid-cols-1 grid-rows-2 items-center justify-items-center text-center opacity-100'>
-				<h1 className='mb-10 text-2xl transition-discrete duration-1000 ease-in-out text-shadow-[-2px_-2px_8px_rgb(255_255_255_/_0.75)]'>
-					I'm Ed Leonard, a 2nd year Software Engineering student studying at the University of Canterbury. The majority of my experience is in front end devlopment using React. Check out my projects here or have a look at my links.
-				</h1>
-				<ul>
-					My Links
-					<li>
-						<a href='https://github.com/Ed-Leonard' target="_blank">
-							Github
-						</a>
-					</li>
-					<li>
-						<a href='https://www.linkedin.com/in/ed-leonard-902266375/'>
-							LinkedIn
-						</a>
-					</li>
-					<li>
+		<div id="about" className='m-15 relative flex flex-col items-center justify-center grid-cols-1 grid-rows-2 text-center opacity-100'>
+			<h1 className='text-2xl'>
+				I'm Ed Leonard, a 2nd year Software Engineering student studying at the University of Canterbury. The majority of my experience is in front end devlopment using React. Check out my projects here or have a look at my links.
+			</h1>
+			<ul>
+				My Links
+				<li>
+					<a href='https://github.com/Ed-Leonard' target="_blank">
+						Github
+					</a>
+				</li>
+				<li>
+					<a href='https://www.linkedin.com/in/ed-leonard-902266375/'>
+						LinkedIn
+					</a>
+				</li>
+				<li>
 
-					</li>
-				</ul>
-				<button onClick={onClick} className='text-5xl mt-10 w-30 opacity-100 animate-pulse border-2 border-white/50 rounded-2xl bg-slate-500/20 p-2 duration-500 ease-in-out hover:w-35 hover:animate-none hover:p-3 text-shadow-lg text-shadow-white/50'>
-					Projects
-				</button>
-			</div>
+				</li>
+			</ul>
 		</div>
 	)
 }
 
-function PlaneMesh({ i, x, y, z, quaternion, cameraRef }: { i: number; x: number; y: number; z: number; quaternion: THREE.Quaternion; cameraRef: any; }) {
+function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number; z: number; quaternion: THREE.Quaternion; }) {
 	const texture = useLoader(TextureLoader, `/img2_.png`);
-
 
 	const memoTexture = useMemo(() => {
 		return texture
@@ -78,8 +71,6 @@ function PlaneMesh({ i, x, y, z, quaternion, cameraRef }: { i: number; x: number
 	const frameRef = useRef<THREE.PlaneGeometry>(null);
 
 	const imageRef = useRef<THREE.PlaneGeometry>(null);
-
-	const cameraRotate = clicked ? cameraRef.current.enableRotate(false) : cameraRef.current.enableRotate(true);
 
 	const frameGeometry = useMemo(() => {
 		const geo = new THREE.PlaneGeometry(fixedWidth, totalHeight, 20, 20);
@@ -123,11 +114,6 @@ function PlaneMesh({ i, x, y, z, quaternion, cameraRef }: { i: number; x: number
 
 	document.body.style.cursor = hovered || clicked ? 'pointer' : 'auto';
 
-	useEffect(() => {
-		console.log(cameraRef)
-
-	}, [cameraRef]);
-
 	return (
 		<a.group position={clicked ? [x, y, z + 1] : [x, y, z]} quaternion={quaternion} scale={scale} onPointerOver={pointerOver} onPointerOut={pointerOut} onClick={pointerClicked}>
 			{/* Text in header space */}
@@ -154,17 +140,19 @@ function PlaneMesh({ i, x, y, z, quaternion, cameraRef }: { i: number; x: number
 			{/* Image with fade-in */}
 			<mesh ref={imageRef} position={[0, -((totalHeight - imageHeight) / 2), 0]} geometry={imageGeometry}>
 				<animated.meshBasicMaterial
-					map={memoTexture}
-					transparent
-					side={THREE.BackSide}
-					opacity={opacity}
+					{...({
+						map: memoTexture,
+						transparent: true,
+						side: THREE.BackSide,
+						opacity,
+					} as any)}
 				/>
 			</mesh>
 		</a.group>
 	);
 }
 
-const Showcase = (cameraRef: any) => {
+const Showcase = () => {
 	const count = 4;
 	const radius = 25
 
@@ -205,41 +193,52 @@ const Showcase = (cameraRef: any) => {
 					)
 				);
 
-				return <PlaneMesh key={i} i={i} x={x} y={y} z={z} quaternion={quaternion} cameraRef={cameraRef} />;
+				return <PlaneMesh key={i} i={i} x={x} y={y} z={z} quaternion={quaternion} />;
 			})}
 		</>
 	);
 };
 
-const Controls = ({ cameraRef }) => {
-
+const Controls = () => {
 	return (<OrbitControls
 		makeDefault
-		ref={cameraRef}
 		target={[0, 0, 0]}
 		enablePan={false}
 		enableZoom={false}
 		enableRotate={true}
-		minDistance={45}
-		maxDistance={45}
+		minDistance={50}
+		maxDistance={50}
 	/>)
 
 }
 
-export function App() {
-	const [show, setShow] = useState(false);
-	const cameraRef = useRef<any>(null);
-
+function Navbar() {
 	return (
-		<>
-			{!show && <Foreground onClick={() => setShow(true)} />}
-			<Canvas style={{ background: 'black' }} className='z-0' gl={{ antialias: true }}>
-				<ambientLight color="white" position={[2, 0, 10]} intensity={0.1} />
-				<Points />
-				<Controls cameraRef={cameraRef} />
-				{show && <Showcase cameraRef={cameraRef} />}
-			</Canvas>
-		</>
+		<nav className="w-full fixed top-0 left-0 z-50 bg-black/80 backdrop-blur-md text-white">
+			<div className="max-w-9/10 mx-auto flex justify-between items-center px-6 py-4">
+				<a href="" className="text-2xl font-bold tracking-wide"> Ed Leonard </a>
+				<ul className="hidden md:flex space-x-6 text-lg">
+					<li><a href="#projects" className="hover:text-gray-300 transition">Projects</a></li>
+					<li><a href="#about" className="hover:text-gray-300 transition">Links</a></li>
+				</ul>
+			</div>
+		</nav>
+	);
+}
+
+export function App() {
+	return (
+		<div className="min-h-screen bg-black/90 text-white">
+			<Navbar />
+			<About />
+			<div id="projects" className="h-150 bg-black-70">
+				<Canvas className='bg-white/10' gl={{ antialias: true }}>
+					<ambientLight color="white" position={[2, 0, 10]} intensity={0.1} />
+					<Controls />
+					<Showcase />
+				</Canvas>
+			</div>
+		</div>
 	)
 }
 
