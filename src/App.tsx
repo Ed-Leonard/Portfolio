@@ -13,7 +13,7 @@ const BEND = 1.9;
 
 function About() {
 	return (
-		<div id="about" className='m-15 relative flex flex-col items-center justify-center grid-cols-1 grid-rows-2 text-center opacity-100'>
+		<div id="about" className='relative flex flex-col items-center justify-center grid-cols-1 grid-rows-2 text-center opacity-100'>
 			<h1 className='text-2xl'>
 				I'm Ed Leonard, a 2nd year Software Engineering student studying at the University of Canterbury. The majority of my experience is in front end devlopment using React. Check out my projects here or have a look at my links.
 			</h1>
@@ -204,32 +204,17 @@ const Controls = () => {
 		makeDefault
 		target={[0, 0, 0]}
 		enablePan={false}
-		enableZoom={false}
+		enableZoom={true}
 		enableRotate={true}
-		minDistance={50}
-		maxDistance={50}
+		minDistance={35}
+		maxDistance={60}
 	/>)
 
-}
-
-function Navbar() {
-	return (
-		<nav className="w-full fixed top-0 left-0 z-50 bg-black/80 backdrop-blur-md text-white">
-			<div className="max-w-9/10 mx-auto flex justify-between items-center px-6 py-4">
-				<a href="" className="text-2xl font-bold tracking-wide"> Ed Leonard </a>
-				<ul className="hidden md:flex space-x-6 text-lg">
-					<li><a href="#projects" className="hover:text-gray-300 transition">Projects</a></li>
-					<li><a href="#about" className="hover:text-gray-300 transition">Links</a></li>
-				</ul>
-			</div>
-		</nav>
-	);
 }
 
 export function App() {
 	return (
 		<div className="min-h-screen bg-black/90 text-white">
-			<Navbar />
 			<About />
 			<div id="projects" className="h-150 bg-black-70">
 				<Canvas className='bg-white/10' gl={{ antialias: true }}>
