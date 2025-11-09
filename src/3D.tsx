@@ -1,17 +1,22 @@
 import { useLoader } from '@react-three/fiber'
-import { OrbitControls, Text } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import * as THREE from "three";
 import { useMemo, useState, useRef } from "react";
 import { TextureLoader } from 'three';
 import { useSpring, a, animated, easings } from '@react-spring/three';
 
 
-const descriptions = ['A simple racing game written in Java using JavaFX']
+enum Projects {
+	JUSTTRAMPIT = 0,
+	RACINGGAME,
+}
+
+const images = ['/justtrampit.png']
 
 const BEND = 1.9;
 
 function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number; z: number; quaternion: THREE.Quaternion; }) {
-	const texture = useLoader(TextureLoader, `/img2_.png`);
+	const texture = useLoader(TextureLoader, images[0]);
 
 	const memoTexture = useMemo(() => {
 		return texture
@@ -41,23 +46,8 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 	const headerPadding = 1;
 	const totalHeight = imageHeight + headerPadding;
 
-	const frameRef = useRef<THREE.PlaneGeometry>(null);
 
 	const imageRef = useRef<THREE.PlaneGeometry>(null);
-
-	const frameGeometry = useMemo(() => {
-		const geo = new THREE.PlaneGeometry(fixedWidth, totalHeight, 20, 20);
-		const pos = geo.attributes.position;
-		for (let i = 0; i < pos.count; i++) {
-
-			const x = pos.getX(i);
-			const y = pos.getY(i);
-			const z = (Math.abs(BEND * Math.cos(x / (fixedWidth / Math.PI) + Math.PI)) + Math.abs((totalHeight / imageHeight) * Math.cos(y / (totalHeight / Math.PI) + Math.PI))) - 0.15;
-
-			pos.setXYZ(i, x, y - 0.21, z);
-		}
-		return geo;
-	}, [fixedWidth, totalHeight, imageHeight]);
 
 	const imageGeometry = useMemo(() => {
 		const geo = new THREE.PlaneGeometry(fixedWidth, imageHeight, 20, 20);
@@ -83,34 +73,10 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 		},
 	});
 
-	const framePosition = new THREE.Vector3(0, 0, clicked ? -0.21 : 0.01);
-
 	document.body.style.cursor = hovered || clicked ? 'pointer' : 'auto';
 
 	return (
 		<a.group position={clicked ? [x, y, z + 1] : [x, y, z]} quaternion={quaternion} scale={scale} onPointerOver={pointerOver} onPointerOut={pointerOut} onClick={pointerClicked}>
-			{/* Text in header space */}
-			<Text
-				fontSize={0.5}
-				position={[0, totalHeight / 2 - headerPadding / 2, 0]}
-				anchorX="center"
-				anchorY="middle"
-				color="black"
-			>
-				{descriptions[i]}
-			</Text>
-
-			{/* Frame */}
-			<animated.mesh ref={frameRef} geometry={frameGeometry} position={framePosition} rotation={[Math.PI + 0.025, 0, 0]} >
-				<animated.meshBasicMaterial
-					color={'white'}
-					transparent
-					opacity={clicked ? 1 : opacity}
-				/>
-			</animated.mesh>
-
-
-			{/* Image with fade-in */}
 			<mesh ref={imageRef} position={[0, -((totalHeight - imageHeight) / 2), 0]} geometry={imageGeometry}>
 				<animated.meshBasicMaterial
 					{...({
