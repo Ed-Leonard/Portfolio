@@ -13,7 +13,7 @@ enum Projects {
 
 const images = ['justtrampit.png', 'racinggame.png', 'portfolio.png']
 
-const BEND = 1.9;
+const RADIUS = 25
 
 function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number; z: number; quaternion: THREE.Quaternion; }) {
 	const texture = useLoader(TextureLoader, i < images.length ? images[i] : images[0]);
@@ -29,7 +29,7 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 	const pointerClicked = () => (clicked ? (click(false), hover(false)) : (click(true), hover(false)))
 	const { scale } = useSpring<{ scale: [number, number, number] }>({
 		scale: hovered ? [-1.2, 1.2, 1.2] : clicked ? [-2, 2, 2] : [-1, 1, 1],
-		config: { tension: 300, friction: 20 },
+		config: { tension: 200, friction: 20 },
 	})
 
 
@@ -53,10 +53,16 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 		const geo = new THREE.PlaneGeometry(fixedWidth, imageHeight, 20, 20);
 		const pos = geo.attributes.position;
 		for (let i = 0; i < pos.count; i++) {
-
 			const x = pos.getX(i);
 			const y = pos.getY(i);
-			const z = -(Math.abs(BEND * Math.cos(x / (fixedWidth / Math.PI) + Math.PI)) + Math.abs(Math.cos(y / (imageHeight / Math.PI) + Math.PI)));
+
+			const r2 = x * x + y * y;
+			let z;
+			if (r2 >= RADIUS * RADIUS) {
+				z = 0;
+			} else {
+				z = -Math.sqrt(RADIUS * RADIUS - r2) + RADIUS;
+			}
 
 			pos.setXYZ(i, x, y, z);
 		}
@@ -82,7 +88,7 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 					{...({
 						map: memoTexture,
 						transparent: true,
-						side: THREE.BackSide,
+						side: THREE.DoubleSide,
 						opacity,
 					} as any)}
 				/>
@@ -93,10 +99,9 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 
 export const Showcase = () => {
 	const count = 4;
-	const radius = 25
 
 	const pointPositions = useMemo(() => {
-		const geometry = new THREE.SphereGeometry(radius, count, count);
+		const geometry = new THREE.SphereGeometry(RADIUS, count, count);
 		const posAttr = geometry.attributes.position;
 		const positions: [number, number, number][] = [];
 
