@@ -1,9 +1,16 @@
 module.exports = {
 	theme: {
 		extend: {
+			keyframes: {
+				'pulse-fade': {
+					'0%, 100%': { opacity: 1 },
+					'50%': { opacity: 0.5 },
+					'100%': { opacity: 0 },
+				},
+			},
 			animation: {
-				'pulse-short': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;'
-			}
+				'pulse-fade': 'pulse-fade 2s ease-in-out 5 forwards',
+			},
 		}
 	}
 }

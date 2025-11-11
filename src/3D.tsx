@@ -3,19 +3,14 @@ import { OrbitControls } from '@react-three/drei'
 import * as THREE from "three";
 import { useMemo, useState, useRef } from "react";
 import { TextureLoader } from 'three';
-import { useSpring, a, animated, easings } from '@react-spring/three';
+import { useSpring, a, animated } from '@react-spring/three';
 
-
-enum Projects {
-	JUSTTRAMPIT = 0,
-	RACINGGAME,
-}
 
 const images = ['justtrampit.png', 'racinggame.png', 'portfolio.png']
 
 const RADIUS = 25
 
-function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number; z: number; quaternion: THREE.Quaternion; }) {
+function PlaneMesh({ i, x, y, z, quaternion, onClick }: { i: number; x: number; y: number; z: number; quaternion: THREE.Quaternion; onClick: (index: number) => void }) {
 	const texture = useLoader(TextureLoader, i < images.length ? images[i] : images[0]);
 
 	const memoTexture = useMemo(() => {
@@ -23,12 +18,14 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 	}, [texture]);
 
 	const [hovered, hover] = useState(false)
-	const [clicked, click] = useState(false)
-	const pointerOver = () => (!clicked && hover(true), pointerOver)
+	const pointerOver = () => (hover(true), pointerOver)
 	const pointerOut = () => hover(false)
-	const pointerClicked = () => (clicked ? (click(false), hover(false)) : (click(true), hover(false)))
+	const pointerClicked = () => {
+		onClick(i)
+	}
+
 	const { scale } = useSpring<{ scale: [number, number, number] }>({
-		scale: hovered ? [-1.2, 1.2, 1.2] : clicked ? [-2, 2, 2] : [-1, 1, 1],
+		scale: hovered ? [-1.2, 1.2, 1.2] : [-1, 1, 1],
 		config: { tension: 200, friction: 20 },
 	})
 
@@ -69,27 +66,16 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 		return geo;
 	}, [fixedWidth, imageHeight]);
 
-	// Animate image opacity
-	const { opacity } = useSpring({
-		opacity: clicked ? 0 : 1,
-		from: { opacity: clicked ? 1 : 0 },
-		config: {
-			duration: 2500,
-			easing: easings.easeInOutCubic
-		},
-	});
-
-	document.body.style.cursor = hovered || clicked ? 'pointer' : 'auto';
+	document.body.style.cursor = hovered ? 'pointer' : 'auto';
 
 	return (
-		<a.group position={clicked ? [x, y, z + 1] : [x, y, z]} quaternion={quaternion} scale={scale} onPointerOver={pointerOver} onPointerOut={pointerOut} onClick={pointerClicked}>
+		<a.group position={[x, y, z]} quaternion={quaternion} scale={scale} onPointerOver={pointerOver} onPointerOut={pointerOut} onClick={pointerClicked}>
 			<mesh ref={imageRef} position={[0, -((totalHeight - imageHeight) / 2), 0]} geometry={imageGeometry}>
 				<animated.meshBasicMaterial
 					{...({
 						map: memoTexture,
 						transparent: true,
 						side: THREE.DoubleSide,
-						opacity,
 					} as any)}
 				/>
 			</mesh>
@@ -97,7 +83,7 @@ function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number
 	);
 }
 
-export const Showcase = () => {
+export const Showcase = ({ onSelect }: { onSelect: (index: number | null) => void }) => {
 	const count = 4;
 
 	const pointPositions = useMemo(() => {
@@ -137,7 +123,7 @@ export const Showcase = () => {
 					)
 				);
 				if (i < images.length) {
-					return <PlaneMesh key={i} i={i} x={x} y={y} z={z} quaternion={quaternion} />;
+					return <PlaneMesh key={i} i={i} x={x} y={y} z={z} quaternion={quaternion} onClick={() => onSelect(i)} />;
 				}
 			})}
 		</>
