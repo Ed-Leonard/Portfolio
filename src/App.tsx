@@ -3,19 +3,19 @@ import { Canvas } from '@react-three/fiber'
 import { useState, useEffect } from "react"
 import { Showcase, Controls } from "./3D"
 
-import GitHubIcon from './github.svg?react'
-import LinkedInIcon from './linkedin.svg?react'
+import GitHubIcon from './assets/github.svg?react'
+import LinkedInIcon from './assets/linkedin.svg?react'
 
 function About({ onProjectsClick, onLinksClick }: { onProjectsClick: () => void, onLinksClick: () => void }) {
 	return (
-		<div id="about" className='bg-[#3c3836] p-5 rounded-lg space-y-2 text-center border'>
+		<div id="about" className='bg-[#3c3836] p-4 rounded-lg space-y-2 text-center border'>
 			<h1 className='text-2xl font-bold'>
 				Ed Leonard
 			</h1>
 			<p className='text-gray-200/80'>2nd year Software Engineering student studying at the University of Canterbury</p>
-			<ul className='inline-flex space-x-8 justify-center w-full'>
-				<li> <button onClick={onProjectsClick} >Projects</button> </li>
-				<li> <button onClick={onLinksClick} >Links</button> </li>
+			<ul className='inline-flex space-x-2 justify-center w-full'>
+				<li> <button className="animate-[pulse_2s_ease-in-out_5] hover:bg-white/20 p-2 rounded-sm" onClick={onProjectsClick} >Projects</button> </li>
+				<li> <button className="hover:bg-white/20 p-2 rounded-sm" onClick={onLinksClick} >Links</button> </li>
 			</ul>
 		</div>
 	)
@@ -62,19 +62,13 @@ function ProjectOverlay({
 
 	return (
 		<div
-			className={`
-        flex flex-col absolute rounded-lg inset-0 items-center justify-center bg-[#3c3836]
-        z-10 px-8 space-y-8
-        transform transition-all duration-500 ease-out origin-center
-        ${visible ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}
-      `}
-		>
+			className={`flex flex-col absolute rounded-lg inset-0 items-center justify-center bg-[#3c3836] z-10 px-8 space-y-8 transform transition-all duration-500 ease-out origin-center ${visible ? 'scale-100' : 'scale-0'}`} >
 			<div className="flex flex-row justify-between space-x-4 py-4">
 				<img
 					src={images[selectedProject]}
 					alt={projectInfo[selectedProject].desc}
 					width="400"
-					className="rounded-lg"
+					className="rounded-lg border"
 				/>
 				<div className="flex flex-col items-center justify-center">
 					<h2 className="text-2xl font-bold mb-2">
@@ -92,7 +86,7 @@ function ProjectOverlay({
 				{projectInfo[selectedProject].link}
 			</a>
 			<button
-				className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-md"
+				className="px-4 py-2 bg-white/10 hover:bg-white/80 hover:text-[#282828] rounded-lg border transition-all"
 				onClick={handleClose}
 			>
 				Close
@@ -102,7 +96,7 @@ function ProjectOverlay({
 }
 
 export function App() {
-	const [projects, showProjects] = useState(true)
+	const [projects, showProjects] = useState(false)
 	const [links, showLinks] = useState(true)
 	const [selectedProject, setSelectedProject] = useState<number | null>(null)
 
@@ -116,7 +110,7 @@ export function App() {
 				{projects &&
 					<div id="projects" className="relative h-140 w-full md:w-2/3 bg-[#3c3836] rounded-lg border">
 						<p className='absolute border rounded-lg max-w-64 m-4 p-2 animate-[pulse_2s_ease-in-out_5]' >Click and drag to interact with the 3D environment. Use your scroll wheel to zoom.</p>
-						<button className='absolute top-2 right-2 z-20 bg-white/10 pb-0.5 rounded-full w-7 h-7 hover:bg-white/80 hover:text-[#282828]' onClick={() => showProjects(false)}>x</button>
+						<button className='absolute top-2 right-2 z-20 bg-white/10 pb-0.5 rounded-full w-7 h-7 hover:bg-white/80 hover:text-[#282828] border transition-all' onClick={() => showProjects(false)}>x</button>
 						<Canvas gl={{ antialias: true }} camera={{ position: [0, 50, 50] }} >
 							<ambientLight color="white" position={[2, 0, 10]} intensity={0.1} />
 							<Controls />
