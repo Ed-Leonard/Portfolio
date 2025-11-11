@@ -11,12 +11,12 @@ enum Projects {
 	RACINGGAME,
 }
 
-const images = ['/justtrampit.png']
+const images = ['justtrampit.png', 'racinggame.png', 'portfolio.png']
 
 const BEND = 1.9;
 
 function PlaneMesh({ i, x, y, z, quaternion }: { i: number; x: number; y: number; z: number; quaternion: THREE.Quaternion; }) {
-	const texture = useLoader(TextureLoader, images[0]);
+	const texture = useLoader(TextureLoader, i < images.length ? images[i] : images[0]);
 
 	const memoTexture = useMemo(() => {
 		return texture
@@ -131,8 +131,9 @@ export const Showcase = () => {
 						new THREE.Vector3(0, 1, 0)
 					)
 				);
-
-				return <PlaneMesh key={i} i={i} x={x} y={y} z={z} quaternion={quaternion} />;
+				if (i < images.length) {
+					return <PlaneMesh key={i} i={i} x={x} y={y} z={z} quaternion={quaternion} />;
+				}
 			})}
 		</>
 	);
@@ -145,7 +146,7 @@ export const Controls = () => {
 		enablePan={false}
 		enableZoom={true}
 		enableRotate={true}
-		minDistance={40}
+		minDistance={35}
 		maxDistance={60}
 	/>)
 

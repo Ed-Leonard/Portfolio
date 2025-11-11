@@ -56,7 +56,7 @@ export function App() {
 					onLinksClick={() => showLinks(!links)}
 				/>
 				{projects &&
-					<div id="projects" className="relative h-150 bg-[#3c3836] w-3/4 rounded-lg">
+					<div id="projects" className="relative h-140 w-2/3 bg-[#3c3836] rounded-lg">
 						<p className='absolute border rounded-lg max-w-64 m-4 p-2 animate-[pulse_2s_ease-in-out_5]' >Click and drag to interact with the 3D environment. Use your scroll wheel to zoom.</p>
 						<button className='absolute top-2 right-2 z-10 bg-white/10 rounded-full w-6 h-6 hover:bg-white/20' onClick={() => showProjects(false)}>x</button>
 						<Canvas gl={{ antialias: true }}>
