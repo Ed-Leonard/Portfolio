@@ -3,7 +3,7 @@ import { OrbitControls } from '@react-three/drei'
 import * as THREE from "three";
 import { useMemo, useState, useRef } from "react";
 import { TextureLoader } from 'three';
-import { useSpring, a, animated } from '@react-spring/three';
+import { useSpring, a } from '@react-spring/three';
 
 
 const images = ['justtrampit.png', 'racinggame.png', 'portfolio.png']
@@ -22,7 +22,6 @@ interface PlaneMeshProps {
 export function PlaneMesh({ i, x, y, z, quaternion, onClick }: PlaneMeshProps) {
 	const texture = useLoader(TextureLoader, i < images.length ? images[i] : images[0]);
 	const [hovered, setHovered] = useState(false);
-	const [clicked, setClicked] = useState(false);
 	const meshRef = useRef<THREE.Mesh>(null);
 
 	let fixedWidth = 20;
@@ -79,8 +78,8 @@ export function PlaneMesh({ i, x, y, z, quaternion, onClick }: PlaneMeshProps) {
 		pos.needsUpdate = true;
 	});
 
-	const handlePointerOver = () => !clicked && setHovered(true);
-	const handlePointerOut = () => !clicked && setHovered(false);
+	const handlePointerOver = () => setHovered(true);
+	const handlePointerOut = () => setHovered(false);
 	const handleClick = () => {
 		onClick(i);
 	};
