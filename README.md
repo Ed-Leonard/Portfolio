@@ -1,5 +1,6 @@
 # React + TypeScript + Tailwind + R3F + Vite
 
-Portfolio website that implements React Three Fiber for project showcase and my links
+Portfolio website am still working on that implements React Three Fiber for project showcase because it's fun
 
 active domain @ https://edleonard.dev :)
+
