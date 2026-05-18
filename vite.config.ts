@@ -3,14 +3,12 @@ import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
 import svgr from 'vite-plugin-svgr'
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [
-		react(),
-		tailwindcss(),
-		svgr({
-			svgrOptions: {},
-		}),
-	],
+	plugins: [react(), tailwindcss(), svgr({
+        svgrOptions: {},
+    }), cloudflare()],
 	base: '/Portfolio/',
 })
