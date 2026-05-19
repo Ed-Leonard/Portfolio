@@ -3,9 +3,26 @@
 html,
 body,
 #root {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	scroll-behavior: smooth;
-	interpolate-size: allow-keywords;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  scroll-behavior: smooth;
+  interpolate-size: allow-keywords;
+}
+
+@keyframes hint {
+  0%,
+  30%,
+  60%,
+  90% {
+    opacity: 1;
+  }
+  15%,
+  45%,
+  75% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+  }
 }
